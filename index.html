@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Princess Dev Diary</title>
+  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -13,9 +15,10 @@
   <header>
     <h1>Princess Dev Diary</h1>
     <div class="header-buttons">
-      <button id="new-post-btn">글쓰기</button>
-      <button onclick="exportData()" class="backup-btn">백업</button>
-      <button onclick="importData()" class="restore-btn">복구</button>
+      <button id="new-post-btn" class="btn btn-primary" title="글쓰기">✏️</button>
+      <button onclick="exportData()" class="btn btn-secondary" title="백업">💾</button>
+      <button onclick="importData()" class="btn btn-secondary" title="복구">📂</button>
+      <button onclick="toggleFirebase()" class="btn btn-firebase" id="firebase-toggle" title="Firebase ON">🔥</button>
     </div>
   </header>
   <main id="posts-container">
@@ -51,6 +54,44 @@
       </form>
     </div>
   </div>
+
+  <!-- Firebase SDK 추가 -->
+  <script type="module">
+    // Firebase SDK 모듈 가져오기
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+
+    // Firebase 설정
+    const firebaseConfig = {
+      apiKey: "AIzaSyCR49PWmvnVcDkt2139IBowGGIFNwRRkiE",
+      authDomain: "homepage-1-3fff8.firebaseapp.com",
+      projectId: "homepage-1-3fff8",
+      storageBucket: "homepage-1-3fff8.firebasestorage.app",
+      messagingSenderId: "575245538383",
+      appId: "1:575245538383:web:62f86b864ca2fcae49c63a"
+    };
+
+    // Firebase 초기화
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // 전역 변수로 Firebase 객체들을 window에 추가
+    window.firebase = {
+      db,
+      storage,
+      collection,
+      addDoc,
+      getDocs,
+      updateDoc,
+      deleteDoc,
+      doc,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    };
+  </script>
   <script src="script.js"></script>
 </body>
 </html> 
