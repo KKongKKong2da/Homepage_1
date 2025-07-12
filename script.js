@@ -519,7 +519,7 @@ function cleanContent(html) {
 
 async function onFormSubmit(e) {
   e.preventDefault();
-  const id = postIdInput.value || Date.now().toString();
+  const id = postIdInput.value ? postIdInput.value : undefined;
   const title = postTitleInput.value.trim();
   let content = editableDiv.innerHTML.trim();
   content = cleanContent(content);
@@ -546,7 +546,7 @@ async function savePost(post) {
   try {
     if (useFirebase && firebaseReady) {
       // Firebase에 저장
-      if (post.id && post.id.length > 10) { // 기존 ID가 있으면 수정
+      if (post.id) { // id가 있으면 수정
         await updatePostInFirebase(post.id, post);
       } else {
         // 새 글 저장
@@ -560,6 +560,8 @@ async function savePost(post) {
       if (idx > -1) {
         posts[idx] = post;
       } else {
+        // 새 글이면 id를 생성해서 부여
+        post.id = post.id || Date.now().toString();
         posts.push(post);
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
