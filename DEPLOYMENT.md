@@ -298,3 +298,52 @@ npm install -g firebase-tools
 ---
 
 **차근차근 진행해보시고, 궁금한 점이 있으면 언제든 질문해 주세요! 😊** 
+
+---
+
+## 중요한 점
+
+- **정확한 storageBucket 값은**  
+  ```
+  homepage-1-3fff8.appspot.com
+  ```
+  입니다.
+
+- 그런데 현재 index.html에는  
+  ```
+  homepage-1-3fff8.firebasestorage.app
+  ```
+  으로 잘못 입력되어 있습니다.
+
+---
+
+## 반드시 이렇게 고쳐주세요!
+
+index.html의 firebaseConfig 부분을  
+아래처럼 **수정**해 주세요.
+
+```javascript
+<code_block_to_apply_changes_from>
+```
+
+---
+
+## 수정 후 해야 할 일
+
+1. **index.html을 저장**하고,
+2. **Firebase Hosting에 다시 배포**하거나,  
+   로컬에서 새로고침 후
+3. **Firebase ON 상태에서 글 저장**을 시도해보세요.
+
+---
+
+이제 Firestore와 Storage가 정상적으로 연결되어  
+글이 잘 저장되고, posts 컬렉션에도 문서가 추가될 것입니다!
+
+---
+
+**수정 후에도 문제가 있으면,  
+브라우저 콘솔의 에러 메시지를 다시 한 번 올려주세요.  
+(이제는 대부분 해결될 가능성이 매우 높아요!)**
+
+궁금한 점이 있으면 언제든 질문해 주세요! 😊 
