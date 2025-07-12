@@ -519,7 +519,7 @@ function cleanContent(html) {
 
 async function onFormSubmit(e) {
   e.preventDefault();
-  // id가 비어 있으면 undefined로 넘김
+  // 새 글이면 id를 아예 undefined로 넘김
   const id = postIdInput.value && postIdInput.value.trim() !== '' ? postIdInput.value : undefined;
   const title = postTitleInput.value.trim();
   let content = editableDiv.innerHTML.trim();
@@ -545,20 +545,20 @@ async function onFormSubmit(e) {
 async function savePost(post) {
   try {
     if (useFirebase && firebaseReady) {
-      // id가 undefined, null, 빈 문자열이면 무조건 새 글
-      if (post.id !== undefined && post.id !== null && post.id !== '') {
-        await updatePostInFirebase(post.id, post);
-      } else {
+      if (post.id === undefined) {
         // 새 글 저장 (id를 넘기지 않음)
         const {id, ...postData} = post;
         const newId = await savePostToFirebase(postData);
         post.id = newId;
+      } else {
+        // 수정
+        await updatePostInFirebase(post.id, post);
       }
     } else {
       // 로컬 스토리지에 저장
       let posts = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
       const idx = posts.findIndex(p => p.id === post.id);
-      if (post.id !== undefined && post.id !== null && post.id !== '' && idx > -1) {
+      if (post.id !== undefined && idx > -1) {
         posts[idx] = post;
       } else {
         // 새 글이면 id를 생성해서 부여
