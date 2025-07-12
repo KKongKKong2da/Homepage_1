@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Princess Dev Diary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Princess Dev Diary</h1>
+    <div class="header-buttons">
+      <button id="new-post-btn">글쓰기</button>
+      <button onclick="exportData()" class="backup-btn">백업</button>
+      <button onclick="importData()" class="restore-btn">복구</button>
+    </div>
+  </header>
+  <main id="posts-container">
+    <!-- 글 목록이 여기에 표시됩니다 -->
+  </main>
+  <div id="data-status" style="text-align: center; margin: 1rem; color: #888; font-size: 0.9rem;">
+    <!-- 데이터 상태 정보가 여기에 표시됩니다 -->
+  </div>
+  <div id="post-modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2 id="modal-title">새 글 쓰기</h2>
+      <form id="post-form">
+        <input type="hidden" id="post-id">
+        <label for="post-title">제목</label>
+        <input type="text" id="post-title" required>
+        <label for="post-date">작성 날짜</label>
+        <input type="date" id="post-date" required>
+        <label for="post-content">내용</label>
+        <div id="toolbar" style="margin-bottom: 0.5rem;">
+          <button type="button" class="toolbar-btn" data-tag="b"><b>B</b></button>
+          <button type="button" class="toolbar-btn" data-tag="u"><u>U</u></button>
+          <button type="button" class="toolbar-btn" data-tag="s"><s>S</s></button>
+          <button type="button" class="toolbar-btn" data-tag="a">🔗</button>
+          <button type="button" class="toolbar-btn" data-tag="ol">1.</button>
+          <button type="button" class="toolbar-btn" data-tag="ul">•</button>
+        </div>
+        <div id="post-content" contenteditable="true" class="editable" style="min-height:6rem;outline:none;" placeholder="내용을 입력하세요..."></div>
+        <label for="post-image">이미지 첨부</label>
+        <input type="file" id="post-image" accept="image/*">
+        <div id="image-preview"></div>
+        <button type="submit">저장</button>
+      </form>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html> 
