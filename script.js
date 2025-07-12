@@ -541,11 +541,12 @@ async function onFormSubmit(e) {
   await savePost({ id, title, content, image, createdAt });
 }
 
-// --- 글 저장/수정 ---
 async function savePost(post) {
   try {
+    // 저장 전 post 객체를 콘솔에 출력(디버깅)
+    console.log('저장 시도 post:', post);
     if (useFirebase && firebaseReady) {
-      if (post.id === undefined) {
+      if (!post.id) {
         // 새 글 저장 (id를 넘기지 않음)
         const {id, ...postData} = post;
         const newId = await savePostToFirebase(postData);
@@ -558,7 +559,7 @@ async function savePost(post) {
       // 로컬 스토리지에 저장
       let posts = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
       const idx = posts.findIndex(p => p.id === post.id);
-      if (post.id !== undefined && idx > -1) {
+      if (post.id && idx > -1) {
         posts[idx] = post;
       } else {
         // 새 글이면 id를 생성해서 부여
