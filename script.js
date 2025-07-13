@@ -398,8 +398,90 @@ function onImageChange() {
   }
 }
 
+// --- 페이지네이션 상태 ---
+let currentPage = 1;
+const POSTS_PER_PAGE = 5;
+let searchMode = false;
+let searchResults = [];
+
+// 검색창 토글 및 이벤트 등록
+window.addEventListener('DOMContentLoaded', () => {
+  const searchBtn = document.getElementById('search-btn');
+  const searchBar = document.getElementById('search-bar');
+  const searchInput = document.getElementById('search-input');
+  const searchSubmit = document.getElementById('search-submit');
+  const searchCancel = document.getElementById('search-cancel');
+  if (searchBtn && searchBar) {
+    searchBtn.onclick = () => {
+      searchBar.style.display = searchBar.style.display === 'none' ? 'block' : 'none';
+      if (searchBar.style.display === 'block') {
+        searchInput.value = '';
+        searchInput.focus();
+      } else {
+        if (searchMode) {
+          searchMode = false;
+          currentPage = 1;
+          loadPosts();
+        }
+      }
+    };
+  }
+  if (searchSubmit && searchInput) {
+    searchSubmit.onclick = () => {
+      doSearch();
+    };
+    searchInput.onkeydown = e => {
+      if (e.key === 'Enter') doSearch();
+    };
+  }
+  if (searchCancel) {
+    searchCancel.onclick = () => {
+      searchBar.style.display = 'none';
+      if (searchMode) {
+        searchMode = false;
+        currentPage = 1;
+        loadPosts();
+      }
+    };
+  }
+});
+
+function doSearch() {
+  const searchInput = document.getElementById('search-input');
+  if (!searchInput) return;
+  const keyword = searchInput.value.trim();
+  if (!keyword) return;
+  searchMode = true;
+  currentPage = 1;
+  loadPosts(keyword);
+}
+
+// --- 페이지네이션 렌더링 함수 ---
+function renderPagination(totalPosts) {
+  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+  let html = '';
+  if (totalPages > 1) {
+    html += `<div class="pagination" style="text-align:center;margin:1rem 0;">
+      <button id="prev-page" ${currentPage === 1 ? 'disabled' : ''}>이전</button>
+      <span style="margin:0 1em;">${currentPage} / ${totalPages}</span>
+      <button id="next-page" ${currentPage === totalPages ? 'disabled' : ''}>다음</button>
+    </div>`;
+  }
+  let paginationDiv = document.getElementById('pagination');
+  if (!paginationDiv) {
+    paginationDiv = document.createElement('div');
+    paginationDiv.id = 'pagination';
+    postsContainer.parentNode.insertBefore(paginationDiv, postsContainer);
+  }
+  paginationDiv.innerHTML = html;
+  if (totalPages > 1) {
+    document.getElementById('prev-page').onclick = () => { currentPage--; loadPosts(); };
+    document.getElementById('next-page').onclick = () => { currentPage++; loadPosts(); };
+  }
+}
+
 // --- 글 목록 불러오기 및 렌더링 ---
-async function loadPosts() {
+async function loadPosts(keyword) {
   let posts;
   if (useFirebase && firebaseReady) {
     posts = await loadPostsFromFirebase();
@@ -409,21 +491,37 @@ async function loadPosts() {
 
   // 최신 날짜-시간-제목 순으로 정렬
   posts.sort((a, b) => {
-    // 날짜+시간 비교 (ISO 형식이면 시간까지 비교됨)
     const dateA = new Date(a.createdAt);
     const dateB = new Date(b.createdAt);
     if (!isNaN(dateA) && !isNaN(dateB)) {
       if (dateA > dateB) return -1;
       if (dateA < dateB) return 1;
-      // 날짜+시간이 같으면 제목 ㄱㄴㄷ
       return (a.title || '').localeCompare(b.title || '', 'ko');
     }
-    // 날짜 파싱이 안 되면 제목 ㄱㄴㄷ
     return (a.title || '').localeCompare(b.title || '', 'ko');
   });
 
+  // 검색어가 있으면 필터링
+  if (searchMode || keyword) {
+    const kw = (keyword || document.getElementById('search-input')?.value || '').trim().toLowerCase();
+    if (kw) {
+      posts = posts.filter(post =>
+        (post.title && post.title.toLowerCase().includes(kw)) ||
+        (post.content && post.content.toLowerCase().includes(kw))
+      );
+    }
+  }
+
+  // 페이지네이션 적용
+  const totalPosts = posts.length;
+  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+  if (currentPage > totalPages) currentPage = totalPages || 1;
+  const startIdx = (currentPage - 1) * POSTS_PER_PAGE;
+  const endIdx = startIdx + POSTS_PER_PAGE;
+  const pagePosts = posts.slice(startIdx, endIdx);
+
   postsContainer.innerHTML = '';
-  
+
   // 데이터 상태 표시
   const dataStatus = $('#data-status');
   if (dataStatus) {
@@ -433,16 +531,14 @@ async function loadPosts() {
       dataStatus.innerHTML = `📚 총 ${posts.length}개의 글이 저장되어 있습니다.`;
     }
   }
-  
-  posts.forEach(post => {
+
+  pagePosts.forEach(post => {
     const postDiv = document.createElement('div');
     postDiv.className = 'post';
-    // createdAt 포맷 변환
     let createdAt = post.createdAt || '';
     if (/\d{4}. \d{2}. \d{2}/.test(createdAt)) {
       createdAt = normalizeDateString(createdAt);
     }
-    // 본문 날짜 포맷 변환
     let content = post.content.replace(/\n/g, '<br>');
     content = normalizeDateString(content);
     postDiv.innerHTML = `
@@ -457,6 +553,8 @@ async function loadPosts() {
     `;
     postsContainer.appendChild(postDiv);
   });
+
+  renderPagination(totalPosts);
 }
 
 // --- 모달 열기/닫기 및 초기화 ---

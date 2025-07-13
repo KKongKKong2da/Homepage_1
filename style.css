@@ -192,11 +192,25 @@ main#posts-container {
 }
 
 .post-content {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   color: var(--text-dark);
   margin-bottom: var(--spacing-md);
   white-space: pre-line;
   line-height: 1.7;
+}
+
+.post-content ul,
+.post-content ol,
+.post-content li {
+  font-size: var(--font-size-base);
+  padding-left: 1.5em;
+  margin-left: 0;
+  list-style-position: inside;
+}
+
+.post-content,
+.post-content * {
+  font-size: var(--font-size-base) !important;
 }
 
 .post-image {
@@ -586,4 +600,75 @@ pre code {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+} 
+
+/* 글쓰기 에디터(수정/새 글) 내부의 모든 텍스트 크기 강제 통일 */
+#post-content,
+#post-content * {
+  font-size: var(--font-size-base) !important;
+} 
+
+#post-content ul,
+#post-content ol {
+  padding-left: 2em;
+  margin-left: 0;
+  list-style-position: inside;
+} 
+
+/* 페이지네이션 영역 항상 공간 확보 */
+#pagination {
+  min-height: 2.5em;
+}
+
+#pagination button {
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #444;
+  padding: 0.3em 1.2em;
+  margin: 0 0.2em;
+  border-radius: 1em;
+  font-size: 1em;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+
+#pagination button:hover:not(:disabled) {
+  background: #ffe0f0;
+  color: #d81b60;
+} 
+
+#search-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+}
+
+#search-bar .search-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  gap: 0.5em;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+#search-bar input[type="text"] {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  border: 1.5px solid #ccc;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+#search-bar button {
+  min-width: 60px;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  font-size: 1em;
 } 

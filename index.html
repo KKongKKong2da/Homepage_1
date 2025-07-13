@@ -16,11 +16,19 @@
     <h1>Princess Dev Diary</h1>
     <div class="header-buttons">
       <button id="new-post-btn" class="btn btn-primary" title="글쓰기">✏️</button>
+      <button id="search-btn" class="btn btn-secondary" title="검색">🔍</button>
       <button onclick="exportData()" class="btn btn-secondary" title="백업">💾</button>
       <button onclick="importData()" class="btn btn-secondary" title="복구">📂</button>
       <button onclick="toggleFirebase()" class="btn btn-firebase" id="firebase-toggle" title="Firebase ON">🔥</button>
     </div>
   </header>
+  <div id="search-bar" style="display:none; text-align:center; margin:1rem 0;">
+    <div class="search-row">
+      <input id="search-input" type="text">
+      <button id="search-submit" class="btn btn-secondary">검색</button>
+      <button id="search-cancel" class="btn btn-secondary">취소</button>
+    </div>
+  </div>
   <main id="posts-container">
     <!-- 글 목록이 여기에 표시됩니다 -->
   </main>
